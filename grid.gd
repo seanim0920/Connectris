@@ -8,7 +8,7 @@ export (int) var columns;
 export (int) var rows;
 export (int) var x_start;
 export (int) var y_start;
-export (int) var offset;
+export (int) var tile_size_in_pixels; #this could probably be calculated instead of being a set variable
 
 var tile_prototypes;
 
@@ -41,8 +41,8 @@ func spawn_tiles():
 			tileInstance.position = grid_to_pixel(i, j);
 	
 func grid_to_pixel(column, row):
-	var x = x_start + offset * column;
-	var y = y_start + -offset * row;
+	var x = x_start + tile_size_in_pixels * column;
+	var y = y_start + -tile_size_in_pixels * row;
 	return Vector2(x, y);
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
