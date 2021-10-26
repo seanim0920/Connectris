@@ -18,6 +18,7 @@ const utils = preload("utils.gd");
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	randomize();
 	var a = utils.new();
 	tile_prototypes = a.load_resources_from_dir("res://Tile_Types");
 	all_tiles = make_new_2d_array();
