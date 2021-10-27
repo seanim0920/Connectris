@@ -1,7 +1,6 @@
 extends Node2D
 
-enum COLOR {blue, green, orange, yellow, pink}
-export (COLOR) var color;
+export (TileType.COLOR) var color;
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
