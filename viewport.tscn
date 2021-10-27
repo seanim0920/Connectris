@@ -17,6 +17,6 @@ __meta__ = {
 [node name="grid" type="Node2D" parent="."]
 script = ExtResource( 2 )
 columns = 7
-rows = 9
+rows = 7
 horizontal_margin = 32
-y_start = 900
+y_start = 1100

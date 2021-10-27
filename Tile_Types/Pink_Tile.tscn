@@ -4,7 +4,7 @@
 [ext_resource path="res://art/Pieces/Pink Piece.png" type="Texture" id=2]
 
 [node name="Pink_Tile" instance=ExtResource( 1 )]
-color = 4
+color = 3
 
 [node name="Sprite" parent="." index="0"]
 texture = ExtResource( 2 )
