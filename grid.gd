@@ -9,8 +9,10 @@ export (int) var rows;
 export (int) var horizontal_margin;
 export (int) var y_start;
 
-var tile_size_in_pixels;
+var grid_touch_start_pos = Vector2(0,0);
+var controlling = false;
 
+var tile_size_in_pixels;
 var tile_prototypes;
 
 var all_tiles = [];
@@ -76,9 +78,60 @@ func check_for_match(column, row, color):
 func grid_to_pixel(column, row):
 	var x = horizontal_margin + (tile_size_in_pixels/2) + tile_size_in_pixels * column;
 	var y = y_start + -tile_size_in_pixels * row;
-	print(x);
 	return Vector2(x, y);
+	
+func pixel_to_grid(x, y):
+	var column = round((x + -horizontal_margin + -(tile_size_in_pixels/2))/tile_size_in_pixels);
+	var row = round((y - y_start)/-tile_size_in_pixels);
+	#check if it's off the grid?
+	return Vector2(column, row);
+	
+func is_within_grid(column, row):
+	if (column >= 0 && column < columns):
+		if (row >= 0 && row < rows):
+			return true;
+	return false;
+	
+#we want to grow the tile that we're touching, and highlight the tile we will swap to.
+#moves can be cancelled by touching outside the grid maybe. but that'll make swapping boundary pieces difficult.
+
+func touch_input():
+	if Input.is_action_just_pressed("ui_touch"):
+		var touch_pos = get_global_mouse_position();
+		grid_touch_start_pos = pixel_to_grid(touch_pos.x, touch_pos.y);
+		if is_within_grid(grid_touch_start_pos.x, grid_touch_start_pos.y):
+			controlling = true;
+	if Input.is_action_just_released("ui_touch"):
+		if controlling:
+			var touch_pos = get_global_mouse_position();
+			var grid_touch_end_pos = pixel_to_grid(touch_pos.x, touch_pos.y);
+			
+			#figure out the direction vector
+			var direction = calc_cardinal_direction(grid_touch_end_pos, grid_touch_start_pos);
+			
+			swap_tiles(grid_touch_start_pos.x, grid_touch_start_pos.y, direction);
+			controlling = false; 
+
+func calc_cardinal_direction(end_pos, start_pos):
+	print("start pos is at ", start_pos)
+	print("end pos is at ", end_pos)
+	var direction = (end_pos - start_pos).normalized();
+	if (direction.abs().x >= direction.abs().y):
+		return Vector2(round(direction.x), 0);
+	else:
+		return Vector2(0, round(direction.y));
+			
+func swap_tiles(column, row, direction):
+	if (!is_within_grid(column + direction.x, row + direction.y)):
+		return;
+	var firstTile = all_tiles[column][row];
+	var otherTile = all_tiles[column + direction.x][row + direction.y];
+	all_tiles[column][row] = otherTile;
+	all_tiles[column + direction.x][row + direction.y] = firstTile;
+	firstTile.position = grid_to_pixel(column + direction.x, row + direction.y);
+	otherTile.position = grid_to_pixel(column, row);	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _process(delta):
+	#delta could speed up the tween animation? with a tight min and max speed ofc.
+	touch_input();
