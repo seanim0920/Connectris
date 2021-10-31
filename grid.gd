@@ -12,7 +12,7 @@ export (int) var y_start;
 var grid_touch_start_pos = Vector2(0,0);
 var controlling = false;
 
-var tile_size_in_pixels;
+onready var tile_size_in_pixels = floor((get_viewport_rect().size.x - (horizontal_margin * 2)) / columns);
 var tile_prototypes;
 
 var all_tiles = [];
@@ -20,9 +20,7 @@ var all_tiles = [];
 const utils = preload("utils.gd");
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
-	tile_size_in_pixels = floor((get_viewport_rect().size.x - (horizontal_margin * 2)) / columns);
-	
+func _ready():	
 	randomize();
 	var a = utils.new();
 	tile_prototypes = a.load_resources_from_dir("res://Tile_Types");
@@ -48,13 +46,16 @@ func spawn_tiles():
 			var rand = randi() % availableColors.size();
 			
 			while(check_for_match(i, j, availableColors[rand])):
+				print("found match at ", i , ", ", j, " with a color of ", TileType.COLOR.keys()[rand] , ", attempting to find a different color");
 				availableColors.remove(availableColors[rand]);
 				rand = randi() % availableColors.size();
+				print("now we're trying ", TileType.COLOR.keys()[rand]);
 				#instead of moving to the next tile type (might not be random enough)
 				#make a new array of colors and subtract the chosen color
 				#pick a random color from the leftovers
 				
 				#in the future we may want to do away with the enum and base the logic exclusively on the contents of the tiletypes folder.
+			print("placing a ", TileType.COLOR.keys()[rand], " color at ", i, ", ", j);
 			
 			var tileInstance = tile_prototypes[rand].instance();
 			var scale = tile_size_in_pixels / 128; #may want to check the size of the sprite rather than hardcoding 128

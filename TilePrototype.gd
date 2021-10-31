@@ -5,6 +5,7 @@ export (TileType.COLOR) var color;
 # var a = 2
 # var b = "text"
 
+onready var move_tween = $move_tween;
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
