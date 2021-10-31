@@ -129,8 +129,8 @@ func swap_tiles(column, row, direction):
 	var otherTile = all_tiles[column + direction.x][row + direction.y];
 	all_tiles[column][row] = otherTile;
 	all_tiles[column + direction.x][row + direction.y] = firstTile;
-	firstTile.position = grid_to_pixel(column + direction.x, row + direction.y);
-	otherTile.position = grid_to_pixel(column, row);	
+	firstTile.move(grid_to_pixel(column + direction.x, row + direction.y));
+	otherTile.move(grid_to_pixel(column, row));
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
